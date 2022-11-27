@@ -8,7 +8,7 @@ def main():
         time_list = []
         rssi_list = []
         for data in lines:
-            time, rssi, other = data.split(",")
+            time, rssi, _ = data.split(",")
             time_list.append(float(time))
             rssi_list.append(int(rssi))
 

@@ -49,14 +49,13 @@ def gather_telemetry(sta):
         delta_x_position = tbo * VEHICLE_SPEED
 
         for i in range(NUMBER_OF_OBSERVATIONS):
-            relative_time = time.time() - start_time
-            relative_position = x_position - START_X_POSITION
+            delta_time = time.time() - start_time
             rssi = get_rssi(sta)
             if rssi is None:
                 rssi = 0
-            fh.write(f'{relative_time},{rssi},{relative_position}\n')
+            fh.write(f'{delta_time},{rssi},{x_position}\n')
             time.sleep(tbo)
-            sta.setPosition(f"{x_position},25,0")
+            sta.setPosition(f"{x_position},150,0")
             x_position += delta_x_position
 
 
@@ -66,7 +65,7 @@ def topology():
                        noise_th=-91, fading_cof=3)
 
     info("*** Creating nodes\n")
-    sta1 = net.addStation('sta1', position=f'{START_X_POSITION},25,0')
+    sta1 = net.addStation('sta1', position=f'{START_X_POSITION},10,0')
     ap1 = net.addAccessPoint('ap1', ssid='ssid-ap1', mode='g', channel='1',
                              position='15,30,0', range=30)
     ap2 = net.addAccessPoint('ap2', ssid='ssid-ap2', mode='g', channel='6',
@@ -93,7 +92,16 @@ def topology():
     s3.start([c1])
 
     info("*** Running CLI\n")
-    gather_telemetry(sta1)
+    
+    while get_rssi(sta1) is None:
+        pass
+
+    info(get_rssi(sta1))
+    sta1.setPosition(f'11,10,0')
+    time.sleep(0.5)
+    info(get_rssi(sta1))
+
+
     # CLI(net)
 
     info("*** Stopping network\n")
