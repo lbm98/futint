@@ -62,7 +62,8 @@ def gather_telemetry(sta):
 def topology():
     # net = Mininet_wifi(controller=Controller, accessPoint=OVSKernelAP)
     net = Mininet_wifi(link=wmediumd, wmediumd_mode=interference,
-                       noise_th=-91, fading_cof=3, controller=RemoteController)
+                       noise_th=-91, fading_cof=3, controller=RemoteController
+                       , ac_method='ssf')
 
     info("*** Creating nodes\n")
     sta1 = net.addStation('sta1', position=f'{START_X_POSITION},25,0')
@@ -92,8 +93,8 @@ def topology():
     s3.start([c1])
 
     info("*** Running CLI\n")
-    # gather_telemetry(sta1)
-    CLI(net)
+    gather_telemetry(sta1)
+    # CLI(net)
 
     info("*** Stopping network\n")
     net.stop()
